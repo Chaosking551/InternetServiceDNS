@@ -1,0 +1,26 @@
+global:
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+  
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'monitoring'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+    #IP addresses of respective Servers have to be put between the Brackets
+      - targets: ['localhost:8080', 'localhost:8081']
+        labels:
+          group: 'DNS_Server'
+
+      - targets: ['localhost:9100']
+        labels:
+          group: 'DB_Server'
+      
+      - targets: ['localhost:9100']
+        labels:
+          group: 'Backup_Server'
