@@ -487,13 +487,22 @@ resource "openstack_networking_floatingip_v2" "db_ip"{
 	port_id = openstack_lb_loadbalancer_v2.db_balancer.vip_port_id
 }
 
-resource "openstack_networking_floatingip_v2" "db_fip"{
+resource "openstack_networking_floatingip_v2" "db_1_fip"{
 	pool = "public1"
 }
 
-resource "openstack_compute_floatingip_associate_v2" "db_fip" {
-  floating_ip = openstack_networking_floatingip_v2.db_fip.address
+resource "openstack_compute_floatingip_associate_v2" "db_1_fip" {
+  floating_ip = openstack_networking_floatingip_v2.db_1_fip.address
   instance_id = openstack_compute_instance_v2.db_serv_1.id
+}
+
+resource "openstack_networking_floatingip_v2" "db_2_fip"{
+	pool = "public1"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "db_2_fip" {
+  floating_ip = openstack_networking_floatingip_v2.db_2_fip.address
+  instance_id = openstack_compute_instance_v2.db_serv_2.id
 }
 
 resource "openstack_networking_floatingip_v2" "backup_ip"{
@@ -600,6 +609,10 @@ output "backup_addr" {
 	value = openstack_networking_floatingip_v2.backup_ip
 }
 
-output "db_init_addr" {
-	value = openstack_networking_floatingip_v2.db_fip
+output "db_serv1_init_addr" {
+	value = openstack_networking_floatingip_v2.db_1_fip
+}
+
+output "db_serv2_init_addr" {
+	value = openstack_networking_floatingip_v2.db_2_fip
 }
