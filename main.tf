@@ -235,7 +235,8 @@ resource "openstack_networking_port_v2" "port_1" {
 	name               = "port_1"
 	admin_state_up     = "true"
 	network_id = openstack_networking_network_v2.network_1.id
-
+	security_group_ids = [openstack_networking_secgroup_v2.dns_security_group.id]
+	
 	fixed_ip {
 		subnet_id  = openstack_networking_subnet_v2.subnet_1.id
 		ip_address = "192.168.0.9"
@@ -247,7 +248,6 @@ resource "openstack_compute_instance_v2" "web_dns_1" {
 	image_name = local.image_name
 	flavor_name = local.flavor_name
 	key_pair = openstack_compute_keypair_v2.terraform-keypair.name
-	security_groups = [openstack_networking_secgroup_v2.dns_security_group.name]
 	
 	depends_on = [openstack_networking_subnet_v2.subnet_1]
 	
@@ -262,7 +262,8 @@ resource "openstack_networking_port_v2" "port_2" {
 	name               = "port_2"
 	admin_state_up     = "true"
 	network_id = openstack_networking_network_v2.network_1.id
-
+	security_group_ids = [openstack_networking_secgroup_v2.dns_security_group.id]
+	
 	fixed_ip {
 		subnet_id  = openstack_networking_subnet_v2.subnet_1.id
 		ip_address = "192.168.0.10"
@@ -274,7 +275,6 @@ resource "openstack_compute_instance_v2" "web_dns_2" {
 	image_name = local.image_name
 	flavor_name = local.flavor_name
 	key_pair = openstack_compute_keypair_v2.terraform-keypair.name
-	security_groups = [openstack_networking_secgroup_v2.dns_security_group.name]
 	
 	depends_on = [openstack_networking_subnet_v2.subnet_1]
 	
@@ -289,6 +289,7 @@ resource "openstack_networking_port_v2" "port_3" {
 	name               = "port_3"
 	admin_state_up     = "true"
 	network_id = openstack_networking_network_v2.network_1.id
+	security_group_ids = [openstack_networking_secgroup_v2.db_security_group.id]
 
 	fixed_ip {
 		subnet_id  = openstack_networking_subnet_v2.subnet_2.id
@@ -301,7 +302,6 @@ resource "openstack_compute_instance_v2" "db_serv_1" {
 	image_name = local.image_name
 	flavor_name = local.flavor_name
 	key_pair = openstack_compute_keypair_v2.terraform-keypair.name
-	security_groups = [openstack_networking_secgroup_v2.db_security_group.name]
 	
 	depends_on = [openstack_networking_subnet_v2.subnet_2]
 	
@@ -316,6 +316,7 @@ resource "openstack_networking_port_v2" "port_4" {
 	name               = "port_4"
 	admin_state_up     = "true"
 	network_id = openstack_networking_network_v2.network_1.id
+	security_group_ids = [openstack_networking_secgroup_v2.db_security_group.id]
 
 	fixed_ip {
 		subnet_id  = openstack_networking_subnet_v2.subnet_2.id
@@ -328,7 +329,6 @@ resource "openstack_compute_instance_v2" "db_serv_2" {
 	image_name = local.image_name
 	flavor_name = local.flavor_name
 	key_pair = openstack_compute_keypair_v2.terraform-keypair.name
-	security_groups = [openstack_networking_secgroup_v2.db_security_group.name]
 	
 	depends_on = [openstack_networking_subnet_v2.subnet_2]
 	
@@ -343,6 +343,7 @@ resource "openstack_networking_port_v2" "port_5" {
 	name               = "port_5"
 	admin_state_up     = "true"
 	network_id = openstack_networking_network_v2.network_1.id
+	security_group_ids = [openstack_networking_secgroup_v2.backup_security_group.id]
 
 	fixed_ip {
 		subnet_id  = openstack_networking_subnet_v2.subnet_3.id
@@ -354,7 +355,6 @@ resource "openstack_compute_instance_v2" "backup_monitor" {
 	image_name = local.image_name
 	flavor_name = var.backup_flavor
 	key_pair = openstack_compute_keypair_v2.terraform-keypair.name
-	security_groups = [openstack_networking_secgroup_v2.backup_security_group.name]
 	
 	depends_on = [openstack_networking_subnet_v2.subnet_3]
 	
@@ -472,6 +472,15 @@ resource "openstack_networking_floatingip_v2" "db_ip"{
 	port_id = openstack_lb_loadbalancer_v2.db_balancer.vip_port_id
 }
 
+resource "openstack_networking_floatingip_v2" "db_fip"{
+	pool = "public1"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "db_fip" {
+  floating_ip = openstack_networking_floatingip_v2.db_fip.address
+  instance_id = openstack_compute_instance_v2.db_serv_1.id
+}
+
 resource "openstack_networking_floatingip_v2" "backup_ip"{
 	pool = "public1"
 }
@@ -483,7 +492,7 @@ resource "openstack_compute_floatingip_associate_v2" "web_dns_1" {
 
 resource "time_sleep" "wait_beforFirstConnect" {
 	depends_on = [openstack_compute_instance_v2.web_dns_1]
-	create_duration = "120s"
+	create_duration = "180s"
 }
 
 resource "time_sleep" "changeDBConfig_1" {
@@ -572,4 +581,8 @@ output "loadbalancer_db_addr" {
 
 output "backup_addr" {
 	value = openstack_networking_floatingip_v2.backup_ip
+}
+
+output "db_init_addr" {
+	value = openstack_networking_floatingip_v2.db_fip
 }
