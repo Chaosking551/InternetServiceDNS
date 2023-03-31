@@ -35,12 +35,4 @@ wget https://raw.githubusercontent.com/Chaosking551/InternetServiceDNS/main/prom
 //Put prometheus.yml into the prometheus-2.43.0.linux-amd64 folder
 ./prometheus --config.file=prometheus.yml &
 
-echo "create cron" >> /home/ubuntu/install_log.txt
-
-cd /home/ubuntu
-
-crontab -l > fiveDayBackup
-echo "59 23 */5 * * /home/ubuntu/DBCreateDump.sh > /dev/null 2>&1" >> fiveDayBackup
-crontab fiveDayBackup
-
 echo "finish install" >> /home/ubuntu/install_log.txt
