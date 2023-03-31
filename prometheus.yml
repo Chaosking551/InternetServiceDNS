@@ -13,11 +13,11 @@ scrape_configs:
 
     static_configs:
     #IP addresses of respective Servers have to be put between the Brackets
-      - targets: ['localhost:8080', 'localhost:8081']
+      - targets: ['192.168.0.9:9100', '192.168.0.10:9100']
         labels:
           group: 'DNS_Server'
 
-      - targets: ['localhost:9100']
+      - targets: ['192.168.1.9:9100','192.168.1.10:9100']
         labels:
           group: 'DB_Server'
       
