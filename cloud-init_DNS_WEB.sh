@@ -16,7 +16,7 @@ sudo sed -i "4a              allow-query {any;};\n\n       forwarders {1.1.1.1;}
 sudo sed -i '8azone "lookup.de" {\n    type master;\n    file "/etc/bind/zones/forward.lookup.de";\n};' /etc/bind/named.conf.local
 sudo mkdir -p /etc/bind/zones
 sudo cp /etc/bind/db.local /etc/bind/zones/forward.lookup.de
-sudo /etc/bind/zones/forward.lookup.de /etc/bind/zones/block
+sudo cp /etc/bind/zones/forward.lookup.de /etc/bind/zones/block
 sudo sed -i "s/127.0.0.1/0.0.0.0/" /etc/bind/zones/block
 sudo sed -i "s/::1/::0/" /etc/bind/zones/block
 sudo systemctl restart named
