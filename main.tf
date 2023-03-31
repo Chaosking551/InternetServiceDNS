@@ -8,23 +8,38 @@ variable "openstack_password"{
 
 variable "public_network_id"{
 	type = string
-	default = "c5ed0f0a-57ca-4b0b-884b-0c1944573650"
 }
 
 variable "backup_flavor"{
 	type = string
 }
 
+variable "db_flavor"{
+	type = string
+}
+
+variable "dns_web_flavor"{
+	type = string
+}
+
+variable "openstack_authurl"{
+	type = string
+}
+
+variable "image"{
+	type = string
+}
+
 
 #define credentials
 locals {
-	auth_url = "https://private-cloud.informatik.hs-fulda.de:5000/v3"
+	auth_url = "${var.openstack_authurl}"
 	user_name = "${var.openstack_username}"
 	user_password = "${var.openstack_password}"
 	tenant_name = "${var.openstack_username}"
 	#network_name  = "${var.openstack_username}-net"
 	router_name   = "${var.openstack_username}-router"
-	image_name    = "Ubuntu 20.04 - Focal Fossa - 64-bit - Cloud Based Image"
+	image_name    = "${var.image}"
 	flavor_name   = "m1.small"
 	region_name   = "RegionOne"
 }
@@ -246,7 +261,7 @@ resource "openstack_networking_port_v2" "port_1" {
 resource "openstack_compute_instance_v2" "web_dns_1" {
 	name = "web_dns_1"
 	image_name = local.image_name
-	flavor_name = local.flavor_name
+	flavor_name = var.dns_web_flavor
 	key_pair = openstack_compute_keypair_v2.terraform-keypair.name
 	
 	depends_on = [openstack_networking_subnet_v2.subnet_1]
@@ -273,7 +288,7 @@ resource "openstack_networking_port_v2" "port_2" {
 resource "openstack_compute_instance_v2" "web_dns_2" {
 	name = "web_dns_2"
 	image_name = local.image_name
-	flavor_name = local.flavor_name
+	flavor_name = var.dns_web_flavor
 	key_pair = openstack_compute_keypair_v2.terraform-keypair.name
 	
 	depends_on = [openstack_networking_subnet_v2.subnet_1]
@@ -300,7 +315,7 @@ resource "openstack_networking_port_v2" "port_3" {
 resource "openstack_compute_instance_v2" "db_serv_1" {
 	name = "db_serv_1"
 	image_name = local.image_name
-	flavor_name = local.flavor_name
+	flavor_name = var.db_flavor
 	key_pair = openstack_compute_keypair_v2.terraform-keypair.name
 	
 	depends_on = [openstack_networking_subnet_v2.subnet_2]
@@ -327,7 +342,7 @@ resource "openstack_networking_port_v2" "port_4" {
 resource "openstack_compute_instance_v2" "db_serv_2" {
 	name = "db_serv_2"
 	image_name = local.image_name
-	flavor_name = local.flavor_name
+	flavor_name = var.db_flavor
 	key_pair = openstack_compute_keypair_v2.terraform-keypair.name
 	
 	depends_on = [openstack_networking_subnet_v2.subnet_2]
