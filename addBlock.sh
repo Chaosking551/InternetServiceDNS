@@ -2,11 +2,9 @@
 
 cd /etc/bind
 
-echo '' >> named.conf.local
-echo 'zone "bild.de" {' >> named.conf.local
-echo '	type master;' >> named.conf.local
-echo '	file "/etc/bind/zones/block"' >> named.conf.local
-echo '};' >> named.conf.local
-
+sudo sed -i '$ a zone "bild.de" {' named.conf.local
+sudo sed -i "$ a   type master;" named.conf.local
+sudo sed -i '$ a   file "/etc/bind/zones/block"' named.conf.local
+sudo sed -i "$ a };" named.conf.local
 
 sudo systemctl restart named
