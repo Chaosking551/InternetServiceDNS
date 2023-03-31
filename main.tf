@@ -451,7 +451,7 @@ resource "openstack_lb_loadbalancer_v2" "db_balancer"{
 resource "openstack_lb_listener_v2" "listener_db" {
 	protocol = "TCP"
 	protocol_port = 3306
-	loadbalancer_id = openstack_lb_loadbalancer_v2.dns_balancer.id
+	loadbalancer_id = openstack_lb_loadbalancer_v2.db_balancer.id
 	connection_limit = 1024
 }
 
