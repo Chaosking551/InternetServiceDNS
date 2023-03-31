@@ -524,6 +524,7 @@ resource "time_sleep" "changeDBConfig_1" {
 	
 		inline = [
 			"bash /home/ubuntu/changeDBConfig.sh ${openstack_networking_floatingip_v2.db_ip.address}",
+			"bash /home/ubuntu/addBlock.sh",
 		]
   }
 }
@@ -553,6 +554,7 @@ resource "time_sleep" "changeDBConfig_2" {
 	
 		inline = [
 			"bash /home/ubuntu/changeDBConfig.sh ${openstack_networking_floatingip_v2.db_ip.address}",
+			"bash /home/ubuntu/addBlock.sh",
 		]
   }
 }
