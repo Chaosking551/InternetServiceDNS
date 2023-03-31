@@ -46,6 +46,7 @@ sudo systemctl restart apache2
 
 cd /home/ubuntu
 wget https://raw.githubusercontent.com/Chaosking551/InternetServiceDNS/main/changeDBConfig.sh
+wget https://raw.githubusercontent.com/Chaosking551/InternetServiceDNS/main/addBlock.sh
 
 echo "start node_exporter" >> /home/ubuntu/install_log.txt
 
