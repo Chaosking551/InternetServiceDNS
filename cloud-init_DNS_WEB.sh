@@ -1,8 +1,13 @@
 #!/bin/bash
+
+echo "start install and update" > /home/ubuntu/logs/install_log.txt
+
 echo | sudo add-apt-repository ppa:isc/bind
 sudo apt-get update
 echo "y" | sudo apt-get install bind9
 sudo systemctl enable named
+
+echo "configure bind" > /home/ubuntu/logs/install_log.txt
 
 sudo sed -i 's/^OPTIONS.*/OPTIONS=" -4 -u bind"' /etc/default/named
 self_ip=$(hostname -I)
@@ -16,12 +21,16 @@ sudo sed -i "s/127.0.0.1/0.0.0.0/" /etc/bind/zones/block
 sudo sed -i "s/::1/::0/" /etc/bind/zones/block
 sudo systemctl restart named
 
+echo "install apache, sql and php" > /home/ubuntu/logs/install_log.txt
+
 sudo apt-get -y install apache2
 sudo apt-get -y install php
 echo "y" | sudo apt install mysql-server 
 sudo apt install php libapache2-mod-php php-mysql
 rm /var/www/html/index.html
 cd /var/www/html
+
+echo "get website" > /home/ubuntu/logs/install_log.txt
 
 wget https://raw.githubusercontent.com/Chaosking551/InternetServiceDNS/main/website/index.php
 wget https://raw.githubusercontent.com/Chaosking551/InternetServiceDNS/main/website/login.php
@@ -37,6 +46,8 @@ sudo systemctl restart apache2
 
 cd /home/ubuntu
 wget https://raw.githubusercontent.com/Chaosking551/InternetServiceDNS/main/changeDBConfig.sh
+
+echo "start node_exporter" > /home/ubuntu/logs/install_log.txt
 
 wget https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
 tar xvfz node_exporter-1.5.0.linux-amd64.tar.gz
