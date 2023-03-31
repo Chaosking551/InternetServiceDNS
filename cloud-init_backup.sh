@@ -26,6 +26,7 @@ cd node_exporter-1.5.0.linux-amd64
 
 echo "start prometheus" >> /home/ubuntu/install_log.txt
 
+cd /home/ubuntu
 wget https://github.com/prometheus/prometheus/releases/download/v2.43.0/prometheus-2.43.0.linux-amd64.tar.gz
 tar xvfz prometheus-2.43.0.linux-amd64.tar.gz
 cd prometheus-2.43.0.linux-amd64
@@ -35,6 +36,8 @@ wget https://raw.githubusercontent.com/Chaosking551/InternetServiceDNS/main/prom
 ./prometheus --config.file=prometheus.yml &
 
 echo "create cron" >> /home/ubuntu/install_log.txt
+
+cd /home/ubuntu
 
 crontab -l > fiveDayBackup
 echo "59 23 */5 * * /home/ubuntu/DBCreateDump.sh > /dev/null 2>&1" >> fiveDayBackup
